@@ -1,4 +1,4 @@
-import { Html, Head, Main, NextScript } from "next/document";
+import { Html, Head, Main, NextScript } from "next/document"
 
 export default () => (
 	<Html lang="en">
@@ -8,4 +8,4 @@ export default () => (
 			<NextScript />
 		</body>
 	</Html>
-);
+)

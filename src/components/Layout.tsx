@@ -1,11 +1,11 @@
-import { ReactNode } from "react";
-import Head from "next/head";
-import Link from "next/link";
+import { ReactNode } from "react"
+import Head from "next/head"
+import Link from "next/link"
 
 interface LayoutProps {
-	title?: string;
-	description?: string;
-	children: ReactNode;
+	title?: string
+	description?: string
+	children: ReactNode
 }
 
 export const Layout = ({
@@ -39,4 +39,4 @@ export const Layout = ({
 
 		<main className="max-w-2xl mx-auto px-8">{children}</main>
 	</>
-);
+)
