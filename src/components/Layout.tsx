@@ -15,7 +15,7 @@ export const Layout = ({
 }: LayoutProps) => (
 	<>
 		<Head>
-			<title>{title ? title + " - " : ""}Dismaps</title>
+			<title>{`${title ? title + " - " : ""}Dismaps`}</title>
 			<meta name="description" content={description} />
 			<meta name="viewport" content="width=device-width, initial-scale=1" />
 		</Head>
