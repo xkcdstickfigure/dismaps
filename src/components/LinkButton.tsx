@@ -1,5 +1,5 @@
 import { Icon } from "react-feather"
-import classNames from "classnames"
+import clsx from "clsx"
 import Link, { LinkProps } from "next/link"
 
 interface Props extends LinkProps {
@@ -10,8 +10,9 @@ interface Props extends LinkProps {
 
 export const LinkButton = ({ icon: Icon, value, active, ...props }: Props) => (
 	<Link
-		className={classNames(
+		className={clsx(
 			active ? "bg-neutral-700" : "bg-neutral-700/50",
+			"hover:bg-neutral-700",
 			"rounded-md",
 			"flex",
 			"items-center",
