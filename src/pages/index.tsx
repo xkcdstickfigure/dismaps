@@ -1,28 +1,89 @@
-import { Guild } from "@/components/Guild"
 import { Layout } from "@/components/Layout"
+import { Guild } from "@/components/Guild"
+import { LinkButton } from "@/components/LinkButton"
+import {
+	MapPin as PinIcon,
+	Users as PopularIcon,
+	Clock as RecentIcon,
+} from "react-feather"
+import { GetServerSideProps } from "next"
 
-export default function Page() {
+const distances = [10, 20, 50]
+
+interface Props {
+	distance: number
+	sortNew: boolean
+}
+
+export default function Page({ distance, sortNew }: Props) {
 	return (
 		<Layout>
-			<div className="space-y-2">
-				<Guild
-					id="1077341721337266206"
-					name="Londoncraft"
-					tagline="Let's reconstruct London in Minecraft!"
-					icon="38c2e8368fd84c336e6b30e94a01d5c9"
-					members={247}
-					topics={["minecraft"]}
-				/>
+			<div className="space-y-4">
+				<div className="flex justify-between">
+					<div className="flex space-x-2">
+						{distances.map((d) => (
+							<LinkButton
+								key={d}
+								icon={PinIcon}
+								value={d + " km"}
+								active={distance === d}
+								href={`/?distance=${d}${sortNew ? "&sort=new" : ""}`}
+							/>
+						))}
+					</div>
 
-				<Guild
-					id="1078072710699167814"
-					name="Walthamstow Central"
-					tagline="A chill place for Walthamstowers to hang out"
-					icon="196af69d8554ab510126e66172c93c89"
-					members={84}
-					topics={["social"]}
-				/>
+					<div className="flex space-x-2">
+						<LinkButton
+							icon={PopularIcon}
+							value="Popular"
+							active={!sortNew}
+							href={`/?distance=${distance}`}
+						/>
+
+						<LinkButton
+							icon={RecentIcon}
+							value="Recent"
+							active={sortNew}
+							href={`/?distance=${distance}&sort=new`}
+						/>
+					</div>
+				</div>
+
+				<div className="space-y-2">
+					<Guild
+						id="1077341721337266206"
+						name="Londoncraft"
+						tagline="Let's reconstruct London in Minecraft!"
+						icon="38c2e8368fd84c336e6b30e94a01d5c9"
+						members={247}
+						topics={["minecraft"]}
+					/>
+
+					<Guild
+						id="1078072710699167814"
+						name="Walthamstow Central"
+						tagline="A chill place for Walthamstowers to hang out"
+						icon="196af69d8554ab510126e66172c93c89"
+						members={84}
+						topics={["social"]}
+					/>
+				</div>
 			</div>
 		</Layout>
 	)
+}
+
+export const getServerSideProps: GetServerSideProps<Props> = async ({
+	query,
+}) => {
+	let sortNew = query.sort === "new"
+	let distance = Number(query.distance)
+	if (!distances.includes(distance)) distance = 10
+
+	return {
+		props: {
+			distance,
+			sortNew,
+		},
+	}
 }

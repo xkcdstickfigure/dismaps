@@ -1,7 +1,7 @@
 import Link from "next/link"
 import { Icon, User as MembersIcon, Hash as TopicIcon } from "react-feather"
 
-interface GuildProps {
+interface Props {
 	id: string
 	name: string
 	tagline: string
@@ -10,14 +10,7 @@ interface GuildProps {
 	topics: string[]
 }
 
-export const Guild = ({
-	id,
-	name,
-	tagline,
-	icon,
-	members,
-	topics,
-}: GuildProps) => (
+export const Guild = ({ id, name, tagline, icon, members, topics }: Props) => (
 	<Link href={`/g/${id}`} className="flex space-x-4 items-center">
 		<img
 			src={`https://cdn.discordapp.com/icons/${id}/${icon}.png?size=96`}
