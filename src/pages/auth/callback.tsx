@@ -1,6 +1,8 @@
 import { GetServerSideProps } from "next"
 import { getProfile } from "@/lib/discord"
-import db, { prisma } from "@/lib/prisma"
+import db from "@/lib/prisma"
+import crypto from "crypto"
+import Cookies from "cookies"
 
 export default () => null
 
@@ -13,6 +15,8 @@ const redirectHome = {
 
 export const getServerSideProps: GetServerSideProps = async ({
 	query: { code },
+	req,
+	res,
 }) => {
 	if (typeof code !== "string") return redirectHome
 
@@ -46,7 +50,27 @@ export const getServerSideProps: GetServerSideProps = async ({
 			},
 		})
 
-		console.log(user)
+		// create session
+		let address = req.headers["x-forwarded-for"]
+		let session = await db.session.create({
+			data: {
+				token: crypto.randomBytes(32).toString("hex"),
+				address:
+					typeof address === "string"
+						? address
+						: typeof address === "object"
+						? address[0]
+						: req.socket.remoteAddress || "",
+				userAgent: req.headers["user-agent"] || "",
+				userId: user.id,
+			},
+		})
+
+		// set cookies
+		let cookies = new Cookies(req, res)
+		cookies.set("dm-token", session.token, {
+			maxAge: 365 * 24 * 60 * 60 * 1000,
+		})
 	} catch (err) {}
 
 	return redirectHome
