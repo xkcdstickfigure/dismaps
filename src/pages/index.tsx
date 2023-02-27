@@ -52,25 +52,29 @@ export default function Page({ user, distance, sortNew }: Props) {
 					</div>
 				</div>
 
-				<div className="space-y-2">
-					<Guild
-						id="1077341721337266206"
-						name="Londoncraft"
-						tagline="Let's reconstruct London in Minecraft!"
-						icon="38c2e8368fd84c336e6b30e94a01d5c9"
-						members={247}
-						topics={["minecraft"]}
-					/>
+				{user ? (
+					<div className="space-y-2">
+						<Guild
+							id="1077341721337266206"
+							name="Londoncraft"
+							tagline="Let's reconstruct London in Minecraft!"
+							icon="38c2e8368fd84c336e6b30e94a01d5c9"
+							members={247}
+							topics={["minecraft"]}
+						/>
 
-					<Guild
-						id="1078072710699167814"
-						name="Walthamstow Central"
-						tagline="A chill place for Walthamstowers to hang out"
-						icon="196af69d8554ab510126e66172c93c89"
-						members={84}
-						topics={["social"]}
-					/>
-				</div>
+						<Guild
+							id="1078072710699167814"
+							name="Walthamstow Central"
+							tagline="A chill place for Walthamstowers to hang out"
+							icon="196af69d8554ab510126e66172c93c89"
+							members={84}
+							topics={["social"]}
+						/>
+					</div>
+				) : (
+					<p>You'll need to sign in to see nearby communities</p>
+				)}
 			</div>
 		</Layout>
 	)
@@ -80,15 +84,38 @@ export const getServerSideProps: GetServerSideProps<Props> = async ({
 	query,
 	req,
 }) => {
-	let user = await auth(req)
-
+	// query params
 	let sortNew = query.sort === "new"
 	let distance = Number(query.distance)
 	if (!distances.includes(distance)) distance = 10
 
+	// auth
+	let user = await auth(req)
+	if (!user)
+		return {
+			props: {
+				user: null,
+				distance,
+				sortNew,
+			},
+		}
+
+	// require location
+	if (
+		!user.locationUpdatedAt ||
+		new Date().getTime() - user.locationUpdatedAt.getTime() > 1000 * 60 * 60
+	)
+		return {
+			redirect: {
+				permanent: false,
+				destination: "/location",
+			},
+		}
+
+	// return
 	return {
 		props: {
-			user: user && {
+			user: {
 				id: user.id,
 				username: user.username,
 				discriminator: user.discriminator,
