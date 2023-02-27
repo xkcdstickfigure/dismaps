@@ -1,6 +1,8 @@
 import type { NextApiRequest, NextApiResponse } from "next"
 import { auth } from "@/lib/auth"
 import { getInvite } from "@/discord/invite"
+import { refreshTokens } from "@/discord/auth"
+import db from "@/lib/prisma"
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
 	// user
@@ -25,6 +27,19 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 	// invite must not expire
 	if (invite.expires_at !== null)
 		return res.status(400).send("The invite link must not expire")
+
+	// refresh tokens
+	let tokens = await refreshTokens(user.refreshToken)
+
+	// update user
+	await db.user.update({
+		where: { id: user.id },
+		data: {
+			accessToken: tokens.access_token,
+			refreshToken: tokens.refresh_token,
+			tokensRefreshAt: new Date(),
+		},
+	})
 
 	// response
 	res.json({})

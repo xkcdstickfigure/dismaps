@@ -20,8 +20,8 @@ export const getProfile = async (
 	let values = new FormData()
 	values.set("client_id", env.discordClientId)
 	values.set("client_secret", env.discordClientSecret)
-	values.set("redirect_uri", env.origin + "/auth/callback")
 	values.set("grant_type", "authorization_code")
+	values.set("redirect_uri", env.origin + "/auth/callback")
 	values.set("code", code)
 
 	let { data: tokens } = await axios.post<Tokens>(
@@ -49,6 +49,26 @@ export const getProfile = async (
 	)
 
 	return { profile, tokens }
+}
+
+export const refreshTokens = async (token: string): Promise<Tokens> => {
+	let values = new FormData()
+	values.set("client_id", env.discordClientId)
+	values.set("client_secret", env.discordClientSecret)
+	values.set("grant_type", "refresh_token")
+	values.set("refresh_token", token)
+
+	let { data: tokens } = await axios.post<Tokens>(
+		"https://discord.com/api/v10/oauth2/token",
+		values,
+		{
+			headers: {
+				"Content-Type": "application/x-www-form-urlencoded",
+			},
+		}
+	)
+
+	return tokens
 }
 
 interface Tokens {

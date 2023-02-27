@@ -47,6 +47,7 @@ export const getServerSideProps: GetServerSideProps = async ({
 				emailVerified: profile.verified,
 				accessToken: tokens.access_token,
 				refreshToken: tokens.refresh_token,
+				tokensRefreshAt: new Date(),
 			},
 		})
 
