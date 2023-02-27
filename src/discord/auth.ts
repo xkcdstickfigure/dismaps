@@ -24,30 +24,29 @@ export const getProfile = async (
 	values.set("grant_type", "authorization_code")
 	values.set("code", code)
 
-	let tokens = (
-		await axios.post<Tokens>(
-			"https://discord.com/api/v10/oauth2/token",
-			values,
-			{
-				headers: {
-					"Content-Type": "application/x-www-form-urlencoded",
-				},
-			}
-		)
-	).data
+	let { data: tokens } = await axios.post<Tokens>(
+		"https://discord.com/api/v10/oauth2/token",
+		values,
+		{
+			headers: {
+				"Content-Type": "application/x-www-form-urlencoded",
+			},
+		}
+	)
 
 	// compare scope
 	if (tokens.scope.split(" ").sort().join(" ") !== scope.join(" "))
 		throw new Error("invalid scope")
 
 	// get profile
-	let profile = (
-		await axios.get<Profile>("https://discord.com/api/v10/users/@me", {
+	let { data: profile } = await axios.get<Profile>(
+		"https://discord.com/api/v10/users/@me",
+		{
 			headers: {
 				Authorization: "Bearer " + tokens.access_token,
 			},
-		})
-	).data
+		}
+	)
 
 	return { profile, tokens }
 }
@@ -64,7 +63,7 @@ interface Profile {
 	id: string
 	username: string
 	discriminator: string
-	avatar: string
+	avatar: string // TODO: this is nullable
 	email: string
 	verified: boolean
 }

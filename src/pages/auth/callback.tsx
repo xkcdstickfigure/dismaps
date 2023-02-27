@@ -1,5 +1,5 @@
 import { GetServerSideProps } from "next"
-import { getProfile } from "@/lib/discord"
+import { getProfile } from "@/discord/auth"
 import db from "@/lib/prisma"
 import crypto from "crypto"
 import Cookies from "cookies"

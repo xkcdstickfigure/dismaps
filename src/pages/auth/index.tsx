@@ -1,5 +1,5 @@
 import { GetServerSideProps } from "next"
-import { authUrl } from "@/lib/discord"
+import { authUrl } from "@/discord/auth"
 
 export default () => null
 
