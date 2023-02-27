@@ -7,17 +7,20 @@ import {
 	Clock as RecentIcon,
 } from "react-feather"
 import { GetServerSideProps } from "next"
+import { auth } from "@/lib/auth"
+import { user } from "@/types/user"
 
 const distances = [10, 20, 50]
 
 interface Props {
+	user: user | null
 	distance: number
 	sortNew: boolean
 }
 
-export default function Page({ distance, sortNew }: Props) {
+export default function Page({ user, distance, sortNew }: Props) {
 	return (
-		<Layout>
+		<Layout user={user}>
 			<div className="space-y-4">
 				<div className="flex justify-between">
 					<div className="flex space-x-2">
@@ -75,13 +78,22 @@ export default function Page({ distance, sortNew }: Props) {
 
 export const getServerSideProps: GetServerSideProps<Props> = async ({
 	query,
+	req,
 }) => {
+	let user = await auth(req)
+
 	let sortNew = query.sort === "new"
 	let distance = Number(query.distance)
 	if (!distances.includes(distance)) distance = 10
 
 	return {
 		props: {
+			user: user && {
+				id: user.id,
+				username: user.username,
+				discriminator: user.discriminator,
+				avatar: user.avatar,
+			},
 			distance,
 			sortNew,
 		},

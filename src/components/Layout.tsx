@@ -1,16 +1,19 @@
 import { ReactNode } from "react"
 import Head from "next/head"
 import Link from "next/link"
+import { user } from "@/types/user"
 
 interface LayoutProps {
 	title?: string
 	description?: string
+	user: user | null
 	children: ReactNode
 }
 
 export const Layout = ({
 	title,
 	description = "Find Discord servers with people near you!",
+	user,
 	children,
 }: LayoutProps) => (
 	<>
@@ -26,16 +29,23 @@ export const Layout = ({
 					<h1 className="font-semibold">Dismaps</h1>
 				</Link>
 
-				<div className="flex items-center space-x-2">
-					<p>
-						xkcd<span className="text-neutral-400 text-sm">#7671</span>
-					</p>
+				{user ? (
+					<div className="flex items-center space-x-2">
+						<p>
+							{user.username}
+							<span className="text-neutral-400 text-sm">
+								#{user.discriminator}
+							</span>
+						</p>
 
-					<img
-						src="https://cdn.discordapp.com/avatars/409676977247617034/e83f92ded0084da28b92b04427f2b025.png?size=64"
-						className="w-8 h-8 rounded-md"
-					/>
-				</div>
+						<img
+							src={`https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.png?size=64`}
+							className="w-8 h-8 rounded-md"
+						/>
+					</div>
+				) : (
+					<Link href="/auth">Sign in</Link>
+				)}
 			</header>
 
 			{children}

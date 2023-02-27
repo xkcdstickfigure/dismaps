@@ -23,7 +23,7 @@ model user {
 
 model session {
   id        String   @id @default(uuid()) @db.Uuid
-  token     String
+  token     String   @unique
   address   String
   userAgent String
   usedAt    DateTime @default(now())
