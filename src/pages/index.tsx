@@ -9,6 +9,8 @@ import {
 import { GetServerSideProps } from "next"
 import { auth } from "@/lib/auth"
 import { user } from "@/types/user"
+import square from "@/lib/square"
+import db from "@/lib/prisma"
 
 const distances = [10, 20, 50]
 
@@ -16,9 +18,17 @@ interface Props {
 	user: user | null
 	distance: number
 	sortNew: boolean
+	guilds?: {
+		id: string
+		name: string
+		tagline: string
+		icon: string
+		members: number
+		topics: string[]
+	}[]
 }
 
-export default function Page({ user, distance, sortNew }: Props) {
+export default function Page({ user, distance, sortNew, guilds = [] }: Props) {
 	return (
 		<Layout user={user}>
 			<div className="space-y-4">
@@ -54,23 +64,9 @@ export default function Page({ user, distance, sortNew }: Props) {
 
 				{user ? (
 					<div className="space-y-2">
-						<Guild
-							id="1077341721337266206"
-							name="Londoncraft"
-							tagline="Let's reconstruct London in Minecraft!"
-							icon="38c2e8368fd84c336e6b30e94a01d5c9"
-							members={247}
-							topics={["minecraft"]}
-						/>
-
-						<Guild
-							id="1078072710699167814"
-							name="Walthamstow Central"
-							tagline="A chill place for Walthamstowers to hang out"
-							icon="196af69d8554ab510126e66172c93c89"
-							members={84}
-							topics={["social"]}
-						/>
+						{guilds.map((g) => (
+							<Guild key={g.id} {...g} />
+						))}
 					</div>
 				) : (
 					<p>You'll need to sign in to see nearby communities</p>
@@ -112,6 +108,23 @@ export const getServerSideProps: GetServerSideProps<Props> = async ({
 			},
 		}
 
+	// get nearby guilds
+	let area = square(Number(user.lat), Number(user.lon), distance)
+	let guilds = await db.guild.findMany({
+		where: {
+			lat: {
+				gte: area.lat1,
+				lte: area.lat2,
+			},
+			lon: {
+				gte: area.lon1,
+				lte: area.lon2,
+			},
+		},
+		orderBy: sortNew ? { createdAt: "desc" } : { members: "desc" },
+		take: 20,
+	})
+
 	// return
 	return {
 		props: {
@@ -123,6 +136,14 @@ export const getServerSideProps: GetServerSideProps<Props> = async ({
 			},
 			distance,
 			sortNew,
+			guilds: guilds.map((g) => ({
+				id: g.id,
+				name: g.name,
+				tagline: g.tagline,
+				icon: g.icon,
+				members: g.members,
+				topics: g.topics,
+			})),
 		},
 	}
 }
