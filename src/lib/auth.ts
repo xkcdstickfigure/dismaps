@@ -5,10 +5,17 @@ import { NextApiRequestCookies } from "next/dist/server/api-utils"
 export const auth = async (
 	req: IncomingMessage & {
 		cookies: NextApiRequestCookies
-	}
+	},
+	useHeader: boolean = false
 ) => {
 	// token
-	let token = req.cookies["dm-token"]
+	let token
+	if (useHeader) {
+		let header = req.headers.authorization
+		if (header?.startsWith("Bearer ")) token = header.substring(7)
+	} else {
+		token = req.cookies["dm-token"]
+	}
 	if (!token) return null
 
 	// get session
@@ -31,5 +38,5 @@ export const auth = async (
 	})
 
 	// return
-	return session.user
+	return { token, ...session.user }
 }

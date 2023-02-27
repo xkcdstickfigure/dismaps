@@ -3,23 +3,34 @@ import { useRouter } from "next/router"
 import { GetServerSideProps } from "next"
 import { auth } from "@/lib/auth"
 import { user } from "@/types/user"
+import axios from "axios"
 
 interface Props {
 	user: user
+	token: string
 }
 
-export default function Page({ user }: Props) {
+export default function Page({ user, token }: Props) {
 	const router = useRouter()
 
 	const requestLocation = () => {
 		navigator.geolocation.getCurrentPosition((position) => {
-			alert(
-				JSON.stringify({
-					lat: position.coords.latitude,
-					lon: position.coords.longitude,
+			axios
+				.post(
+					"/api/location",
+					{
+						lat: position.coords.latitude,
+						lon: position.coords.longitude,
+					},
+					{
+						headers: {
+							Authorization: "Bearer " + token,
+						},
+					}
+				)
+				.then(() => {
+					router.push("/")
 				})
-			)
-			router.push("/")
 		})
 	}
 
@@ -63,12 +74,13 @@ export const getServerSideProps: GetServerSideProps<Props> = async ({
 
 	return {
 		props: {
-			user: user && {
+			user: {
 				id: user.id,
 				username: user.username,
 				discriminator: user.discriminator,
 				avatar: user.avatar,
 			},
+			token: user.token,
 		},
 	}
 }

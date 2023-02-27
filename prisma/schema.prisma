@@ -18,6 +18,10 @@ model user {
   refreshToken  String
   createdAt     DateTime @default(now())
 
+  lat               Decimal?  @db.Decimal(9, 7)
+  lon               Decimal?  @db.Decimal(10, 7)
+  locationUpdatedAt DateTime?
+
   session session[]
 }
 
