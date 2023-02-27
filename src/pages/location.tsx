@@ -1,7 +1,14 @@
 import { Layout } from "@/components/Layout"
 import { useRouter } from "next/router"
+import { GetServerSideProps } from "next"
+import { auth } from "@/lib/auth"
+import { user } from "@/types/user"
 
-export default function Page() {
+interface Props {
+	user: user
+}
+
+export default function Page({ user }: Props) {
 	const router = useRouter()
 
 	const requestLocation = () => {
@@ -17,7 +24,7 @@ export default function Page() {
 	}
 
 	return (
-		<Layout>
+		<Layout user={user}>
 			<div className="bg-neutral-900 w-96 mx-auto rounded-md text-center p-8 space-y-8">
 				<div className="space-y-2">
 					<h1 className="text-xl font-medium">Dismaps needs location access</h1>
@@ -40,4 +47,28 @@ export default function Page() {
 			</div>
 		</Layout>
 	)
+}
+
+export const getServerSideProps: GetServerSideProps<Props> = async ({
+	req,
+}) => {
+	let user = await auth(req)
+	if (!user)
+		return {
+			redirect: {
+				permanent: false,
+				destination: "/",
+			},
+		}
+
+	return {
+		props: {
+			user: user && {
+				id: user.id,
+				username: user.username,
+				discriminator: user.discriminator,
+				avatar: user.avatar,
+			},
+		},
+	}
 }
