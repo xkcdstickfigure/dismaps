@@ -23,8 +23,9 @@ model user {
   lon               Decimal?  @db.Decimal(10, 7)
   locationUpdatedAt DateTime?
 
-  sessions session[]
-  guilds   guild[]
+  session  session[]
+  guild    guild[]
+  guildAdd guildAdd[]
 }
 
 model session {
@@ -51,6 +52,18 @@ model guild {
   lat         Decimal  @db.Decimal(9, 7)
   lon         Decimal  @db.Decimal(10, 7)
   createdAt   DateTime @default(now())
+
+  owner   user   @relation(fields: [ownerId], references: [id])
+  ownerId String
+}
+
+model guildAdd {
+  id        String   @id
+  name      String
+  icon      String?
+  invite    String
+  members   Int
+  createdAt DateTime @default(now())
 
   owner   user   @relation(fields: [ownerId], references: [id])
   ownerId String

@@ -10,8 +10,17 @@ interface Props {
 	token: string
 }
 
+interface Invite {
+	id: string
+	name: string
+	icon: string
+	members: number
+}
+
 export default function Page({ user, token }: Props) {
 	const [error, setError] = useState<string | null>(null)
+	const [loading, setLoading] = useState(false)
+	const [invite, setInvite] = useState<Invite>()
 
 	const lookupInvite: ChangeEventHandler<HTMLInputElement> = (e) => {
 		setError(null)
@@ -24,18 +33,22 @@ export default function Page({ user, token }: Props) {
 			let split = value.split("/")
 			let code = split[split.length - 1]
 			if (code) {
+				setLoading(true)
 				axios
-					.get("/api/add/invite?code=" + encodeURIComponent(code), {
-						headers: {
-							Authorization: "Bearer " + token,
-						},
-					})
-					.then(({ data }) => {
-						console.log(data)
-					})
+					.post<Invite>(
+						"/api/add/invite",
+						{ code },
+						{
+							headers: {
+								Authorization: "Bearer " + token,
+							},
+						}
+					)
+					.then(({ data }) => setInvite(data))
 					.catch((err) => {
 						let message: string | undefined = err.response?.data
 						setError(message || "Something went wrong.")
+						setLoading(false)
 					})
 			}
 		}
@@ -43,17 +56,25 @@ export default function Page({ user, token }: Props) {
 
 	return (
 		<Layout user={user}>
-			<div className="flex space-x-2">
-				<h1 className="text-2xl">Invite Link:</h1>
-				<input
-					autoFocus={true}
-					onChange={lookupInvite}
-					placeholder="https://discord.gg/123456"
-					className="text-2xl bg-transparent text-neutral-400 placeholder-neutral-600 outline-none flex-grow"
-				/>
-			</div>
+			{invite ? (
+				<p>{invite.name}</p>
+			) : (
+				<>
+					<div className="flex items-center space-x-2">
+						<h1 className="text-2xl">Invite Link:</h1>
+						<input
+							autoFocus={true}
+							onChange={lookupInvite}
+							placeholder="https://discord.gg/123456"
+							className="text-2xl bg-transparent text-neutral-400 placeholder-neutral-600 outline-none flex-grow"
+						/>
 
-			{error && <p className="text-red-500 mt-1">{error}</p>}
+						{loading && <Loading />}
+					</div>
+
+					{error && <p className="text-red-500 mt-1">{error}</p>}
+				</>
+			)}
 		</Layout>
 	)
 }
@@ -82,3 +103,7 @@ export const getServerSideProps: GetServerSideProps<Props> = async ({
 		},
 	}
 }
+
+const Loading = () => (
+	<div className="w-6 h-6 rounded-full border-4 border-neutral-700 border-t-neutral-400 animate-spin" />
+)

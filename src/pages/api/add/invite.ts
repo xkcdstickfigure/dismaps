@@ -10,17 +10,17 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 	let user = await auth(req, true)
 	if (!user) return res.status(403).send("bad authorization")
 
-	// lookup invite code
-	let { code } = req.query
-	if (typeof code !== "string") return res.status(400).send("bad request")
+	// body
+	let { code } = req.body
+	if (typeof code !== "string") return res.status(400).send("invalid body")
 
+	// lookup invite code
 	let invite
 	try {
 		invite = await getInvite(code)
 	} catch (err) {
 		return res.status(400).send("Failed to access invite link")
 	}
-	if (!invite.guild) return res.status(400).send("The invite link is invalid")
 
 	// user must be inviter
 	if (user.id !== invite.inviter?.id)
@@ -29,6 +29,10 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 	// invite must not expire
 	if (invite.expires_at !== null)
 		return res.status(400).send("The invite link must not expire")
+
+	// guild must have icon
+	if (!invite.guild?.icon)
+		return res.status(400).send("The server must have an icon")
 
 	// refresh tokens
 	let tokens
@@ -58,9 +62,34 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 	if (!guild.owner)
 		return res.status(400).send("You must be the owner of the server")
 
-	// TODO: create guild add flow tied to user
-	// (no need for token, just use a normal id and check it matches the user)
+	// create guildAdd
+	await db.guildAdd.upsert({
+		where: {
+			id: guild.id,
+		},
+		create: {
+			id: guild.id,
+			name: guild.name,
+			icon: guild.icon,
+			invite: invite.code,
+			members: invite.approximate_member_count,
+			ownerId: user.id,
+		},
+		update: {
+			name: guild.name,
+			icon: guild.icon,
+			invite: invite.code,
+			members: invite.approximate_member_count,
+			createdAt: new Date(),
+			ownerId: user.id,
+		},
+	})
 
 	// response
-	res.json({})
+	res.json({
+		id: guild.id,
+		name: guild.name,
+		icon: guild.icon,
+		members: invite.approximate_member_count,
+	})
 }
