@@ -1,9 +1,8 @@
-import { useState } from "react"
+import { useState, ChangeEventHandler } from "react"
 import { Layout } from "@/components/Layout"
 import { GetServerSideProps } from "next"
 import { auth } from "@/lib/auth"
 import { user } from "@/types/user"
-import { ChangeEventHandler } from "react"
 import axios from "axios"
 
 interface Props {
