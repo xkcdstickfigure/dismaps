@@ -5,10 +5,15 @@ import Link, { LinkProps } from "next/link"
 interface Props extends LinkProps {
 	icon: Icon
 	value: string
-	active: boolean
+	active?: boolean
 }
 
-export const LinkButton = ({ icon: Icon, value, active, ...props }: Props) => (
+export const LinkButton = ({
+	icon: Icon,
+	value,
+	active = false,
+	...props
+}: Props) => (
 	<Link
 		className={clsx(
 			active ? "bg-neutral-700" : "bg-neutral-700/50",

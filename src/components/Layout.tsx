@@ -2,6 +2,8 @@ import { ReactNode } from "react"
 import Head from "next/head"
 import Link from "next/link"
 import { user } from "@/types/user"
+import { LinkButton } from "./LinkButton"
+import { Plus as PlusIcon } from "react-feather"
 
 interface LayoutProps {
 	title?: string
@@ -25,9 +27,17 @@ export const Layout = ({
 
 		<div className="max-w-2xl mx-auto px-8">
 			<header className="mx-auto h-16 flex justify-between items-center text-lg">
-				<Link href="/">
-					<h1 className="font-semibold">Dismaps</h1>
-				</Link>
+				<div className="flex items-center space-x-4">
+					<Link href="/">
+						<h1 className="font-semibold">Dismaps</h1>
+					</Link>
+
+					<LinkButton
+						icon={PlusIcon}
+						value="Add Server"
+						href={user ? "/add" : "/auth"}
+					/>
+				</div>
 
 				{user ? (
 					<div className="flex items-center space-x-2">
