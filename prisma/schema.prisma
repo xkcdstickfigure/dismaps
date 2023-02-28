@@ -11,7 +11,7 @@ model user {
   id              String   @id
   username        String
   discriminator   String
-  avatar          String
+  avatar          String?
   email           String
   emailVerified   Boolean
   accessToken     String

@@ -49,7 +49,13 @@ export const Layout = ({
 						</p>
 
 						<img
-							src={`https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.png?size=64`}
+							src={
+								user.avatar
+									? `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.png?size=64`
+									: `https://cdn.discordapp.com/embed/avatars/${
+											Number(user.discriminator) % 5
+									  }.png`
+							}
 							className="w-8 h-8 rounded-md"
 						/>
 					</div>

@@ -83,7 +83,7 @@ interface Profile {
 	id: string
 	username: string
 	discriminator: string
-	avatar: string // TODO: this is nullable
+	avatar: string | null
 	email: string
 	verified: boolean
 }
