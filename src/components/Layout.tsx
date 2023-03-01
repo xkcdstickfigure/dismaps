@@ -5,7 +5,7 @@ import { user } from "@/types/user"
 import { LinkButton } from "./LinkButton"
 import { Plus as PlusIcon } from "react-feather"
 
-interface LayoutProps {
+interface Props {
 	title?: string
 	description?: string
 	user: user | null
@@ -17,7 +17,7 @@ export const Layout = ({
 	description = "Find Discord servers with people near you!",
 	user,
 	children,
-}: LayoutProps) => (
+}: Props) => (
 	<>
 		<Head>
 			<title>{`${title ? title + " - " : ""}Dismaps`}</title>

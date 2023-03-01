@@ -38,7 +38,7 @@ interface GuildLabelProps {
 	value: string
 }
 
-const GuildLabel = ({ icon: Icon, value }: GuildLabelProps) => (
+export const GuildLabel = ({ icon: Icon, value }: GuildLabelProps) => (
 	<div className="bg-red-500/10 rounded-md flex items-center space-x-2 py-1 px-2">
 		<Icon className="w-4 h-4 text-red-500" />
 		<p className="text-sm">{value}</p>
