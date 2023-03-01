@@ -18,9 +18,10 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 	let invite
 	try {
 		invite = await getInvite(code)
-	} catch (err) {
+	} catch (err) {}
+
+	if (!invite?.guild)
 		return res.status(400).send("That invite link doesn't seem to work")
-	}
 
 	// user must be inviter
 	if (user.id !== invite.inviter?.id)
@@ -29,10 +30,6 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 	// invite must not expire
 	if (invite.expires_at !== null)
 		return res.status(400).send("The invite link must not expire")
-
-	// guild must have icon
-	if (!invite.guild?.icon)
-		return res.status(400).send("The server must have an icon")
 
 	// refresh tokens
 	let tokens
@@ -59,8 +56,13 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 	let guildId = invite.guild.id
 	let guild = guilds.filter((g) => g.id === guildId)[0]
 	if (!guild) return res.status(400).send("You must be a member of the server")
+
+	// owner
 	if (!guild.owner)
 		return res.status(400).send("You must be the owner of the server")
+
+	// icon
+	if (!guild.icon) return res.status(400).send("The server must have an icon")
 
 	// create guildAdd
 	await db.guildAdd.upsert({

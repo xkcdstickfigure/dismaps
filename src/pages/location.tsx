@@ -51,7 +51,7 @@ export default function Page({ user, token }: Props) {
 
 				<button
 					onClick={requestLocation}
-					className="bg-red-500 w-full rounded-md py-1 text-lg"
+					className="bg-red-500 w-full rounded-md py-2 text-lg"
 				>
 					Allow
 				</button>

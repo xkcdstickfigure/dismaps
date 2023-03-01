@@ -16,6 +16,8 @@ import { User as MembersIcon, Hash as TopicIcon } from "react-feather"
 import { Input } from "@/components/Input"
 import { TextArea } from "@/components/TextArea"
 import clsx from "clsx"
+import { topics as availableTopics } from "@/data/topics"
+import { useRouter } from "next/router"
 
 interface Props {
 	user: user
@@ -35,7 +37,7 @@ export default function Page({ user, token }: Props) {
 	return (
 		<Layout user={user}>
 			{invite ? (
-				<GuildForm invite={invite} />
+				<GuildForm token={token} invite={invite} />
 			) : (
 				<InviteForm token={token} setInvite={setInvite} />
 			)}
@@ -74,13 +76,12 @@ interface InviteFormProps {
 }
 
 const InviteForm = ({ token, setInvite }: InviteFormProps) => {
-	const [error, setError] = useState<string | null>(null)
+	const [error, setError] = useState("")
 	const [loading, setLoading] = useState(false)
 
-	const lookupInvite: ChangeEventHandler<HTMLInputElement> = (e) => {
-		setError(null)
+	const lookupInvite = (value: string) => {
+		setError("")
 
-		let value = e.target.value.trim()
 		if (
 			value.startsWith("https://discord.com/invite/") ||
 			value.startsWith("https://discord.gg/")
@@ -115,7 +116,7 @@ const InviteForm = ({ token, setInvite }: InviteFormProps) => {
 				<h1 className="text-2xl">Invite Link:</h1>
 				<input
 					autoFocus={true}
-					onChange={lookupInvite}
+					onChange={(e) => lookupInvite(e.target.value.trim())}
 					placeholder="https://discord.gg/123456"
 					className="text-2xl bg-transparent text-neutral-400 placeholder-neutral-600 outline-none flex-grow"
 				/>
@@ -133,13 +134,38 @@ const Loading = () => (
 )
 
 interface GuildFormProps {
+	token: string
 	invite: Invite
 }
 
-const GuildForm = ({ invite: { id, name, icon, members } }: GuildFormProps) => {
+const GuildForm = ({
+	token,
+	invite: { id, name, icon, members },
+}: GuildFormProps) => {
 	const [tagline, setTagline] = useState("")
 	const [description, setDescription] = useState("")
 	const [topics, setTopics] = useState<string[]>([])
+	const [error, setError] = useState("")
+	const router = useRouter()
+
+	const addGuild = () => {
+		setError("")
+		axios
+			.post<{ id: string }>(
+				"/api/add/complete",
+				{ id, tagline, description, topics },
+				{
+					headers: {
+						Authorization: "Bearer " + token,
+					},
+				}
+			)
+			.then(({ data: { id } }) => router.push("/g/" + id))
+			.catch((err) => {
+				let message: string | undefined = err.response?.data
+				setError(message || "Something went wrong.")
+			})
+	}
 
 	return (
 		<div className="space-y-4">
@@ -180,7 +206,7 @@ const GuildForm = ({ invite: { id, name, icon, members } }: GuildFormProps) => {
 			/>
 
 			<div className="flex flex-wrap gap-2">
-				{["art", "lgbt", "minecraft", "roblox", "social"].map((topic) => (
+				{availableTopics.map((topic) => (
 					<Topic
 						key={topic}
 						value={topic}
@@ -188,11 +214,26 @@ const GuildForm = ({ invite: { id, name, icon, members } }: GuildFormProps) => {
 						onClick={() => {
 							if (topics.includes(topic))
 								setTopics(topics.filter((t) => t !== topic))
-							else if (topics.length < 3) setTopics([...topics, topic])
+							else setTopics([...topics.splice(-2), topic])
 						}}
 					/>
 				))}
 			</div>
+
+			<button
+				onClick={() => addGuild()}
+				className="bg-red-500 w-full rounded-md py-2 text-lg"
+			>
+				Add Server
+			</button>
+
+			<p className="text-sm text-neutral-400 text-center">
+				This server will be visible to people in the same area as you, but they
+				won't be able to access your precise location. You can edit this details
+				at any time.
+			</p>
+
+			{error && <p className="text-red-500 text-center">{error}</p>}
 		</div>
 	)
 }
