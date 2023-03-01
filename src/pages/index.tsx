@@ -9,7 +9,7 @@ import {
 import { GetServerSideProps } from "next"
 import { auth } from "@/lib/auth"
 import { user } from "@/types/user"
-import square from "@/lib/square"
+import { square } from "@/lib/coords"
 import db from "@/lib/prisma"
 
 const distances = [10, 20, 50]

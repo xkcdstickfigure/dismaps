@@ -2,6 +2,7 @@ import type { NextApiRequest, NextApiResponse } from "next"
 import { auth } from "@/lib/auth"
 import { topics as availableTopics } from "@/data/topics"
 import db from "@/lib/prisma"
+import { calcLat, calcLon } from "@/lib/coords"
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
 	// user
@@ -54,6 +55,12 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 	)
 		return res.status(400).send("You need to have a location set")
 
+	// random location offset:
+	// this prevents users manipulating their selection area
+	// to determine the precise location of the guild owner
+	let lat = calcLat(Number(user.lat), Math.random() * 4 - 2)
+	let lon = calcLon(Number(user.lon), Math.random() * 4 - 2, lat)
+
 	// create guild
 	let guild
 	try {
@@ -67,8 +74,8 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 				members: guildAdd.members,
 				topics,
 				invite: guildAdd.invite,
-				lat: user.lat,
-				lon: user.lon,
+				lat,
+				lon,
 				ownerId: user.id,
 			},
 		})
