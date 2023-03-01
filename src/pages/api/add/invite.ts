@@ -19,7 +19,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 	try {
 		invite = await getInvite(code)
 	} catch (err) {
-		return res.status(400).send("Failed to access invite link")
+		return res.status(400).send("That invite link doesn't seem to work")
 	}
 
 	// user must be inviter
