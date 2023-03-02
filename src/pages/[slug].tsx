@@ -28,7 +28,8 @@ interface Props {
 export default function Page({ user, name, guilds, places }: Props) {
 	return (
 		<Layout
-			title={"Top Discord Servers in " + name}
+			title={`Top Discord Servers in ${name}`}
+			description={`Popular Discord communities with people in ${name}`}
 			user={user}
 			className="space-y-8"
 		>

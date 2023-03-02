@@ -14,7 +14,7 @@ interface Props
 
 export const Layout = ({
 	title,
-	description = "Find Discord servers with people near you!",
+	description = "Find popular Discord servers with people nearby",
 	user,
 	...props
 }: Props) => (
