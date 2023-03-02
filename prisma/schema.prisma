@@ -27,6 +27,7 @@ model user {
   location location[]
   guild    guild[]
   guildAdd guildAdd[]
+  join     join[]
 }
 
 model session {
@@ -66,6 +67,8 @@ model guild {
 
   owner   user   @relation(fields: [ownerId], references: [id])
   ownerId String
+
+  join join[]
 }
 
 model guildAdd {
@@ -78,4 +81,16 @@ model guildAdd {
 
   owner   user   @relation(fields: [ownerId], references: [id])
   ownerId String
+}
+
+model join {
+  date DateTime @default(now())
+
+  user   user   @relation(fields: [userId], references: [id])
+  userId String
+
+  guild   guild  @relation(fields: [guildId], references: [id])
+  guildId String
+
+  @@id([userId, guildId])
 }
