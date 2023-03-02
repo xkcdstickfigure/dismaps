@@ -67,13 +67,15 @@ export default function Page({ user, token, guild }: Props) {
 				</div>
 			</div>
 
-			<p className="whitespace-pre-wrap leading-loose bg-neutral-900/25 border border-neutral-900/25 py-2 px-4 rounded-md">
+			<div className=" bg-neutral-900/25 border border-neutral-900/25 py-2 px-4 rounded-md space-y-4">
 				{guild.description
 					.split("\n")
 					.map((l) => l.trim())
 					.filter((l) => !!l)
-					.join("\n")}
-			</p>
+					.map((l, i) => (
+						<p key={i}>{l}</p>
+					))}
+			</div>
 
 			<div className="flex items-center justify-between">
 				<p className="text-xs text-neutral-400">
