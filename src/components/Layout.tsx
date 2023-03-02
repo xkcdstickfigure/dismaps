@@ -1,4 +1,4 @@
-import { ReactNode, DetailedHTMLProps, HTMLAttributes } from "react"
+import { DetailedHTMLProps, HTMLAttributes } from "react"
 import Head from "next/head"
 import Link from "next/link"
 import { user } from "@/types/user"
@@ -9,7 +9,7 @@ interface Props
 	extends DetailedHTMLProps<HTMLAttributes<HTMLElement>, HTMLElement> {
 	title?: string
 	description?: string
-	user: user | null
+	user?: user | null
 }
 
 export const Layout = ({
@@ -60,7 +60,7 @@ export const Layout = ({
 						/>
 					</div>
 				) : (
-					<Link href="/auth">Sign in</Link>
+					user === null && <Link href="/auth">Sign in</Link>
 				)}
 			</header>
 
