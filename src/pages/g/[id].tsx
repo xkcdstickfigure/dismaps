@@ -21,31 +21,29 @@ interface Props {
 
 export default function Page({ user, guild }: Props) {
 	return (
-		<Layout title={guild.name} user={user}>
-			<div className="space-y-8">
-				<div className="flex space-x-4 items-center">
-					<img
-						src={`https://cdn.discordapp.com/icons/${guild.id}/${guild.icon}.png?size=96`}
-						className="w-24 h-24 rounded-md"
-					/>
+		<Layout title={guild.name} user={user} className="space-y-8">
+			<div className="flex space-x-4 items-center">
+				<img
+					src={`https://cdn.discordapp.com/icons/${guild.id}/${guild.icon}.png?size=96`}
+					className="w-24 h-24 rounded-md"
+				/>
 
-					<div className="space-y-2">
-						<div>
-							<p className="text-lg">{guild.name}</p>
-							<p className="text-sm text-neutral-400">{guild.tagline}</p>
-						</div>
+				<div className="space-y-2">
+					<div>
+						<p className="text-lg">{guild.name}</p>
+						<p className="text-sm text-neutral-400">{guild.tagline}</p>
+					</div>
 
-						<div className="flex space-x-2">
-							<GuildLabel icon={MembersIcon} value={guild.members.toString()} />
-							{guild.topics.map((topic) => (
-								<GuildLabel key={topic} icon={TopicIcon} value={topic} />
-							))}
-						</div>
+					<div className="flex space-x-2">
+						<GuildLabel icon={MembersIcon} value={guild.members.toString()} />
+						{guild.topics.map((topic) => (
+							<GuildLabel key={topic} icon={TopicIcon} value={topic} />
+						))}
 					</div>
 				</div>
-
-				<p className="whitespace-pre">{guild.description}</p>
 			</div>
+
+			<p className="whitespace-pre">{guild.description}</p>
 		</Layout>
 	)
 }

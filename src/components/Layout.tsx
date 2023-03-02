@@ -1,22 +1,22 @@
-import { ReactNode } from "react"
+import { ReactNode, DetailedHTMLProps, HTMLAttributes } from "react"
 import Head from "next/head"
 import Link from "next/link"
 import { user } from "@/types/user"
 import { LinkButton } from "./LinkButton"
 import { Plus as PlusIcon } from "react-feather"
 
-interface Props {
+interface Props
+	extends DetailedHTMLProps<HTMLAttributes<HTMLElement>, HTMLElement> {
 	title?: string
 	description?: string
 	user: user | null
-	children: ReactNode
 }
 
 export const Layout = ({
 	title,
 	description = "Find Discord servers with people near you!",
 	user,
-	children,
+	...props
 }: Props) => (
 	<>
 		<Head>
@@ -64,7 +64,7 @@ export const Layout = ({
 				)}
 			</header>
 
-			{children}
+			<main {...props} />
 		</div>
 	</>
 )
