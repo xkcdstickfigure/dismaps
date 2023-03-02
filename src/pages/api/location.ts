@@ -12,6 +12,15 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 	if (typeof lat !== "number" || typeof lon !== "number")
 		return res.status(400).send("invalid body")
 
+	// create location
+	await db.location.create({
+		data: {
+			lat,
+			lon,
+			userId: user.id,
+		},
+	})
+
 	// update user
 	await db.user.update({
 		where: { id: user.id },
