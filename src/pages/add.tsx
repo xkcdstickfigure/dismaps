@@ -220,8 +220,8 @@ const GuildForm = ({
 
 			<p className="text-sm text-neutral-400 text-center">
 				This server will be visible to people in the same area as you, but they
-				won't be able to access your precise location. You can edit these
-				details at any time.
+				won't be able to access your precise location. You won't be able to
+				change this information later.
 			</p>
 
 			{error && <p className="text-red-500 text-center">{error}</p>}
