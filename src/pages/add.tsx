@@ -1,6 +1,5 @@
 import {
 	useState,
-	ChangeEventHandler,
 	Dispatch,
 	SetStateAction,
 	DetailedHTMLProps,
@@ -35,7 +34,7 @@ export default function Page({ user, token }: Props) {
 	const [invite, setInvite] = useState<Invite>()
 
 	return (
-		<Layout user={user}>
+		<Layout title="Add your server" user={user}>
 			{invite ? (
 				<GuildForm token={token} invite={invite} />
 			) : (
