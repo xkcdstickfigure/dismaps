@@ -29,7 +29,7 @@ export const Layout = ({
 			<header className="mx-auto h-16 flex justify-between items-center text-lg">
 				<div className="flex items-center space-x-4">
 					<Link href="/">
-						<h1 className="font-semibold">Dismaps</h1>
+						<p className="font-semibold">Dismaps</p>
 					</Link>
 
 					<LinkButton

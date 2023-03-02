@@ -94,3 +94,13 @@ model join {
 
   @@id([userId, guildId])
 }
+
+model place {
+  id   String  @id
+  name String
+  slug String  @unique
+  lat1 Decimal @db.Decimal(9, 7)
+  lon1 Decimal @db.Decimal(10, 7)
+  lat2 Decimal @db.Decimal(9, 7)
+  lon2 Decimal @db.Decimal(10, 7)
+}
