@@ -112,26 +112,18 @@ const InviteForm = ({ token, setInvite }: InviteFormProps) => {
 
 	return (
 		<div className="space-y-1">
-			<div className="flex items-center space-x-2">
-				<h1 className="text-2xl">Invite Link:</h1>
-				<input
-					autoFocus={true}
-					onChange={(e) => lookupInvite(e.target.value.trim())}
-					placeholder="https://discord.gg/123456"
-					className="text-2xl bg-transparent text-neutral-400 placeholder-neutral-600 outline-none flex-grow"
-				/>
-
-				{loading && <Loading />}
-			</div>
+			<Input
+				label="Invite Link"
+				autoFocus={true}
+				onChange={(e) => lookupInvite(e.target.value.trim())}
+				placeholder="https://discord.gg/123456"
+				loading={loading}
+			/>
 
 			{error && <p className="text-red-500">{error}</p>}
 		</div>
 	)
 }
-
-const Loading = () => (
-	<div className="w-6 h-6 rounded-full border-4 border-neutral-700 border-t-neutral-400 animate-spin" />
-)
 
 interface GuildFormProps {
 	token: string
