@@ -6,7 +6,6 @@ import {
 	Users as PopularIcon,
 	Clock as RecentIcon,
 	Map as MapIcon,
-	Plus as PlusIcon,
 } from "react-feather"
 import { GetServerSideProps } from "next"
 import { auth } from "@/lib/auth"
