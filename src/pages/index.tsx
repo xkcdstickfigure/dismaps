@@ -116,7 +116,7 @@ export default function Page({ user, distance, sortNew, guilds = [] }: Props) {
 							href="/auth"
 							className="bg-red-500 rounded-md py-1 px-4 text-md"
 						>
-							Sign in
+							Sign in with Discord
 						</Link>
 					</div>
 				</div>
