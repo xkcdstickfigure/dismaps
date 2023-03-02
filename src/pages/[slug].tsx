@@ -58,13 +58,10 @@ export default function Page({ user, name, guilds, places }: Props) {
 
 						<div className="flex justify-center">
 							<Link
-								href="/add"
-								className={
-									"bg-neutral-700/50 hover:bg-neutral-700 rounded-md flex items-center space-x-1 py-1 pl-2 pr-4"
-								}
+								href={user ? "/add" : "/auth"}
+								className="bg-red-500 rounded-md py-1 px-4 text-md"
 							>
-								<PlusIcon className="w-8 h-8 text-red-500" strokeWidth={1.5} />
-								<p className="text-lg">Add Server</p>
+								Add Server
 							</Link>
 						</div>
 					</div>

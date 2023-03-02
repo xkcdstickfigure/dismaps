@@ -91,18 +91,36 @@ export default function Page({ user, distance, sortNew, guilds = [] }: Props) {
 						<div className="flex justify-center">
 							<Link
 								href="/add"
-								className={
-									"bg-neutral-700/50 hover:bg-neutral-700 rounded-md flex items-center space-x-1 py-1 pl-2 pr-4"
-								}
+								className="bg-red-500 rounded-md py-1 px-4 text-md"
 							>
-								<PlusIcon className="w-8 h-8 text-red-500" strokeWidth={1.5} />
-								<p className="text-lg">Add Server</p>
+								Add Server
 							</Link>
 						</div>
 					</div>
 				)
 			) : (
-				<p>You'll need to sign in to see nearby communities</p>
+				<div className="space-y-4 text-center">
+					<MapIcon
+						className="w-48 h-48 text-neutral-400 mx-auto"
+						strokeWidth={1.5}
+					/>
+
+					<div className="space-y-1">
+						<p className="text-2xl font-semibold">Welcome to Dismaps</p>
+						<p className="text-sm text-neutral-400">
+							Find Discord servers with people in the same area as you
+						</p>
+					</div>
+
+					<div className="flex justify-center">
+						<Link
+							href="/auth"
+							className="bg-red-500 rounded-md py-1 px-4 text-md"
+						>
+							Sign in
+						</Link>
+					</div>
+				</div>
 			)}
 		</Layout>
 	)
