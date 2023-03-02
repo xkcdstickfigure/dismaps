@@ -46,7 +46,7 @@ export default function Page({ user, distance, sortNew, guilds = [] }: Props) {
 					))}
 				</div>
 
-				<div className="flex space-x-2">
+				<div className="hidden sm:flex space-x-2">
 					<LinkButton
 						icon={PopularIcon}
 						value="Popular"

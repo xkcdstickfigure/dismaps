@@ -32,11 +32,13 @@ export const Layout = ({
 						<p className="font-semibold">Dismaps</p>
 					</Link>
 
-					<LinkButton
-						icon={PlusIcon}
-						value="Add Server"
-						href={user ? "/add" : "/auth"}
-					/>
+					<div className="hidden sm:block">
+						<LinkButton
+							icon={PlusIcon}
+							value="Add Server"
+							href={user ? "/add" : "/auth"}
+						/>
+					</div>
 				</div>
 
 				{user ? (

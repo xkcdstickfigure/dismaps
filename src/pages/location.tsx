@@ -37,7 +37,7 @@ export default function Page({ user, token }: Props) {
 	return (
 		<Layout
 			user={user}
-			className="bg-neutral-900 w-96 mx-auto rounded-md text-center p-8 space-y-8"
+			className="bg-neutral-900 w-96 max-w-full mx-auto rounded-md text-center p-8 space-y-8"
 		>
 			<div className="space-y-2">
 				<h1 className="text-xl font-medium">Dismaps needs location access</h1>

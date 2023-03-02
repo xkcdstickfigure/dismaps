@@ -49,7 +49,7 @@ export default function Page({ user, token, guild }: Props) {
 			<div className="flex space-x-4 items-center">
 				<img
 					src={`https://cdn.discordapp.com/icons/${guild.id}/${guild.icon}.png?size=96`}
-					className="w-24 h-24 rounded-md"
+					className="w-16 h-16 sm:w-24 sm:h-24 rounded-md"
 				/>
 
 				<div className="space-y-2">
