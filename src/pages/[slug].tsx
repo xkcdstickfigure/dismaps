@@ -1,3 +1,4 @@
+import { Fragment } from "react"
 import { Layout } from "@/components/Layout"
 import { Guild } from "@/components/Guild"
 import { Map as MapIcon, Plus as PlusIcon } from "react-feather"
@@ -10,7 +11,7 @@ import Link from "next/link"
 interface Props {
 	user: user | null
 	name: string
-	guilds?: {
+	guilds: {
 		id: string
 		name: string
 		tagline: string
@@ -18,51 +19,72 @@ interface Props {
 		members: number
 		topics: string[]
 	}[]
+	places: {
+		name: string
+		slug: string
+	}[]
 }
 
-export default function Page({ user, name, guilds = [] }: Props) {
+export default function Page({ user, name, guilds, places }: Props) {
 	return (
 		<Layout
 			title={"Top Discord Servers in " + name}
 			user={user}
-			className="space-y-4"
+			className="space-y-8"
 		>
-			<h1 className="text-2xl font-medium">Top Discord Servers in {name}</h1>
-			{guilds.length > 0 ? (
-				<div className="space-y-2">
-					{guilds.map((g) => (
-						<Guild key={g.id} {...g} />
+			<div className="space-y-4">
+				<h1 className="text-2xl font-medium">Top Discord Servers in {name}</h1>
+				{guilds.length > 0 ? (
+					<div className="space-y-2">
+						{guilds.map((g) => (
+							<Guild key={g.id} {...g} />
+						))}
+					</div>
+				) : (
+					<div className="space-y-4 text-center">
+						<MapIcon
+							className="w-48 h-48 text-neutral-400 mx-auto"
+							strokeWidth={1.5}
+						/>
+
+						<div className="space-y-1">
+							<p className="text-2xl font-semibold">
+								You're in uncharted territory!
+							</p>
+							<p className="text-sm text-neutral-400">
+								We don't have any servers in {name}, why not add your own?
+							</p>
+						</div>
+
+						<div className="flex justify-center">
+							<Link
+								href="/add"
+								className={
+									"bg-neutral-700/50 hover:bg-neutral-700 rounded-md flex items-center space-x-1 py-1 pl-2 pr-4"
+								}
+							>
+								<PlusIcon className="w-8 h-8 text-red-500" strokeWidth={1.5} />
+								<p className="text-lg">Add Server</p>
+							</Link>
+						</div>
+					</div>
+				)}
+			</div>
+
+			<div className="text-xs text-neutral-400 space-y-1">
+				<p>
+					Dismaps helps you discover Discord servers with people in the same
+					area as you.
+				</p>
+				<p>
+					{places.map((place, i) => (
+						<Fragment key={place.slug}>
+							{i > 0 && " • "}
+							<Link href={"/" + place.slug}>{place.name}</Link>
+						</Fragment>
 					))}
-				</div>
-			) : (
-				<div className="space-y-4 text-center">
-					<MapIcon
-						className="w-48 h-48 text-neutral-400 mx-auto"
-						strokeWidth={1.5}
-					/>
-
-					<div className="space-y-1">
-						<p className="text-2xl font-semibold">
-							You're in uncharted territory!
-						</p>
-						<p className="text-sm text-neutral-400">
-							We don't have any servers in {name}, why not add your own?
-						</p>
-					</div>
-
-					<div className="flex justify-center">
-						<Link
-							href="/add"
-							className={
-								"bg-neutral-700/50 hover:bg-neutral-700 rounded-md flex items-center space-x-1 py-1 pl-2 pr-4"
-							}
-						>
-							<PlusIcon className="w-8 h-8 text-red-500" strokeWidth={1.5} />
-							<p className="text-lg">Add Server</p>
-						</Link>
-					</div>
-				</div>
-			)}
+				</p>
+			</div>
 		</Layout>
 	)
 }
@@ -96,6 +118,17 @@ export const getServerSideProps: GetServerSideProps<Props> = async ({
 		take: 20,
 	})
 
+	// list places
+	let places = await db.place.findMany({
+		select: {
+			name: true,
+			slug: true,
+		},
+		orderBy: {
+			name: "asc",
+		},
+	})
+
 	// return
 	return {
 		props: {
@@ -116,6 +149,7 @@ export const getServerSideProps: GetServerSideProps<Props> = async ({
 				members: g.members,
 				topics: g.topics,
 			})),
+			places,
 		},
 	}
 }
