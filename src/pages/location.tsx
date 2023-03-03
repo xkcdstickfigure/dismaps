@@ -4,6 +4,8 @@ import { GetServerSideProps } from "next"
 import { auth } from "@/lib/auth"
 import { user } from "@/types/user"
 import axios from "axios"
+import { useState } from "react"
+import clsx from "clsx"
 
 interface Props {
 	user: user
@@ -12,26 +14,32 @@ interface Props {
 
 export default function Page({ user, token }: Props) {
 	const router = useRouter()
+	const [loading, setLoading] = useState(false)
 
 	const requestLocation = () => {
-		navigator.geolocation.getCurrentPosition((position) => {
-			axios
-				.post(
-					"/api/location",
-					{
-						lat: position.coords.latitude,
-						lon: position.coords.longitude,
-					},
-					{
-						headers: {
-							Authorization: "Bearer " + token,
+		if (loading) return
+		setLoading(true)
+
+		navigator.geolocation.getCurrentPosition(
+			(position) => {
+				axios
+					.post(
+						"/api/location",
+						{
+							lat: position.coords.latitude,
+							lon: position.coords.longitude,
 						},
-					}
-				)
-				.then(() => {
-					router.push("/")
-				})
-		})
+						{
+							headers: {
+								Authorization: "Bearer " + token,
+							},
+						}
+					)
+					.then(() => router.push("/"))
+					.catch(() => setLoading(false))
+			},
+			() => setLoading(false)
+		)
 	}
 
 	return (
@@ -53,7 +61,14 @@ export default function Page({ user, token }: Props) {
 
 			<button
 				onClick={requestLocation}
-				className="bg-red-500 w-full rounded-md py-2 text-lg"
+				className={clsx(
+					loading ? "bg-neutral-700" : "bg-red-500",
+					loading && "text-neutral-400",
+					"w-full",
+					"rounded-md",
+					"py-2",
+					"text-lg"
+				)}
 			>
 				Allow
 			</button>
