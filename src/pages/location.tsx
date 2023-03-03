@@ -70,7 +70,7 @@ export default function Page({ user, token }: Props) {
 					"text-lg"
 				)}
 			>
-				Allow
+				{loading ? "Loading..." : "Allow"}
 			</button>
 		</Layout>
 	)
