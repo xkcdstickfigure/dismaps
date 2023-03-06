@@ -23,6 +23,7 @@ export const Layout = ({
 			<title>{`${title ? title + " - " : ""}Dismaps`}</title>
 			<meta name="description" content={description} />
 			<meta name="viewport" content="width=device-width, initial-scale=1" />
+			<link rel="icon" href="/pin.png" />
 		</Head>
 
 		<div className="max-w-2xl mx-auto px-8">
